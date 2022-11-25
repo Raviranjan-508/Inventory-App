@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const { connection } = require('./config/db');
+const { userRouter } = require('./routes/userRoute');
 
 
 const app = express();
@@ -9,6 +10,8 @@ const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended : false }))
+
+app.use("/", userRouter);
 
 app.get("/", async(req,res) => {
     res.send("Hello from my side")

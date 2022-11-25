@@ -18,13 +18,13 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "Please add a password"],
-        minLength: [6, "Character length should be upto 6 chracters"],
-        maxLength: [23, "Chracter should not be more than 23 chracters"]
+        minLength: [6, "Character length should be upto 6 chracters"]
+        // maxLength: [23, "Chracter should not be more than 23 chracters"]
     },
     photo: {
         type: String,
         required: [true, "Please add a photo"],
-        default: ""
+        default: "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
     },
     phone: {
         type : String,
