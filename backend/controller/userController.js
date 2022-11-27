@@ -1,5 +1,11 @@
 const { userModel } = require("../models/userModel");
 const bcrypt = require('bcrypt');
+const jwt  = require('jsonwebtoken');
+
+const generateToken = (id) => {
+    return jwt.sign({id} , process.env.SECRET , {
+        expiresIn : "1d"})
+}
 
 
 
@@ -24,28 +30,29 @@ const registerUser = async(req,res) => {
         throw new Error("user email already exists, please enter new email")
     }
 
-    bcrypt.hash(password , 6).then(async function(hash){
+        // Create new Users
         const user = await userModel.create({
             name,
             email,
-            password : hash
+            password 
         });
+
+        // Generate Token
+        const token = generateToken(user._id);
+
+        //
 
         if(user){
             const { _id , name , email , password , photo , phone , bio } = user;
             res.status(201).json({
-                _id , name , email , password , photo , phone , bio
+                _id , name , email , password , photo , phone , bio , token
             })
         }
         else{
             res.status(400)
             throw new Error(" Invalid User data ")
         }
-    })
-
-    // Create new Users
-       
-}
+    }       
 
 module.exports = {
     registerUser

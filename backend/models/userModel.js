@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -35,6 +37,18 @@ const userSchema = new mongoose.Schema({
         maxLength : [250 , "Bio must be more than 250 chracters"],
         default : "bio"
     }
+});
+
+// Encrypt password before sending into the DB
+userSchema.pre("save", async function(next){
+
+    if(!this.isModified("password")) {
+        return next()
+    }
+    // Hashed Password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(this.password , salt);
+    this.password = hashedPassword;
 })
 
 const userModel = mongoose.model("User", userSchema);
