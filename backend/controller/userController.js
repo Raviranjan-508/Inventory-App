@@ -1,7 +1,6 @@
 const { userModel } = require("../models/userModel");
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const nodemon = require("nodemon");
+const bcrypt = require('bcrypt');
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.SECRET, {
@@ -42,14 +41,13 @@ const registerUser = async (req, res) => {
     // Generate Token
     const token = generateToken(user._id);
 
-    // Send HTTP only cookie
     res.cookie("token", token, {
         path: "/",
         httpOnly: true,
-        expiresIn: new Date(Date.now() + 1000 * 86400), // 1 day
+        expires: new Date(Date.now() + 1000 * 86400), // 1 day
         sameSite: "none",
-        secure: true
-    })
+        secure: true,
+    });
 
     if (user) {
         const { _id, name, email, password, photo, phone, bio } = user;
@@ -63,6 +61,35 @@ const registerUser = async (req, res) => {
     }
 }
 
+const loginUser = async (req,res) => {
+    const {  email , password } = req.body;
+    
+    // Validate Request
+    if(!email || !password){
+        res.status(400);
+        throw new Error("Please add email and password")
+    }
+
+    // Check if user exists
+    const user = await userModel.findOne({email});
+    console.log(user)
+
+    // checckPassword
+    const passworddIsCorrect = await bcrypt.compare(password , user.password);
+
+    if(user && passworddIsCorrect){
+        const { _id, name, email, password, photo, phone, bio } = user;
+        res.status(201).json({
+            _id, name, email, password, photo, phone, bio, token
+        })
+    }
+    else{
+        res.status(400)
+        throw new Error(" Invalid email or password ")
+    }
+}
+
 module.exports = {
-    registerUser
+    registerUser,
+    loginUser
 }
