@@ -8,8 +8,6 @@ const generateToken = (id) => {
     })
 }
 
-
-
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -80,7 +78,7 @@ const loginUser = async (req,res) => {
     if(user && passworddIsCorrect){
         const { _id, name, email, password, photo, phone, bio } = user;
         res.status(201).json({
-            _id, name, email, password, photo, phone, bio, token
+            _id, name, email, password, photo, phone, bio
         })
     }
     else{
@@ -89,7 +87,24 @@ const loginUser = async (req,res) => {
     }
 }
 
+const logoutUser = async (req,res) => {
+    res.cookie("token", "", {
+        path: "/",
+        httpOnly: true,
+        expires: new Date(0), // 1 day
+        sameSite: "none",
+        secure: true,
+    });
+    return res.status(200).json({ messge : "Logout Successfully" })
+}
+
+const getUser = async (req,res) => {
+    res.send("User is here");
+}
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    logoutUser,
+    getUser
 }
