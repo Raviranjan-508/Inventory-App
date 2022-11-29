@@ -1,4 +1,5 @@
 const { userModel } = require("../models/userModel");
+const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -8,7 +9,7 @@ const generateToken = (id) => {
     })
 }
 
-const registerUser = async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
 
     // Validation
@@ -57,37 +58,37 @@ const registerUser = async (req, res) => {
         res.status(400)
         throw new Error(" Invalid User data ")
     }
-}
+})
 
-const loginUser = async (req,res) => {
-    const {  email , password } = req.body;
-    
+const loginUser = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+
     // Validate Request
-    if(!email || !password){
+    if (!email || !password) {
         res.status(400);
         throw new Error("Please add email and password")
     }
 
     // Check if user exists
-    const user = await userModel.findOne({email});
+    const user = await userModel.findOne({ email });
     console.log(user)
 
     // checckPassword
-    const passworddIsCorrect = await bcrypt.compare(password , user.password);
+    const passworddIsCorrect = await bcrypt.compare(password, user.password);
 
-    if(user && passworddIsCorrect){
+    if (user && passworddIsCorrect) {
         const { _id, name, email, password, photo, phone, bio } = user;
         res.status(201).json({
             _id, name, email, password, photo, phone, bio
         })
     }
-    else{
+    else {
         res.status(400)
         throw new Error(" Invalid email or password ")
     }
-}
+})
 
-const logoutUser = async (req,res) => {
+const logoutUser = asyncHandler(async (req, res) => {
     res.cookie("token", "", {
         path: "/",
         httpOnly: true,
@@ -95,12 +96,12 @@ const logoutUser = async (req,res) => {
         sameSite: "none",
         secure: true,
     });
-    return res.status(200).json({ messge : "Logout Successfully" })
-}
+    return res.status(200).json({ messge: "Logout Successfully" })
+})
 
-const getUser = async (req,res) => {
+const getUser = asyncHandler(async (req, res) => {
     res.send("User is here");
-}
+})
 
 module.exports = {
     registerUser,
