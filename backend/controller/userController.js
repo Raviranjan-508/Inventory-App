@@ -12,7 +12,7 @@ const generateToken = (id) => {
         expiresIn: "1d"
     });
 };
-
+ 
 // Register User
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error("user email already exists, please enter new email")
     }
 
-    // Create new Users
+    // Create new Users  
     const user = await userModel.create({
         name,
         email,
