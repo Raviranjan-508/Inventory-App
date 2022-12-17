@@ -4,6 +4,7 @@ const { connection } = require('./config/db');
 const { userRouter } = require('./routes/userRoute');
 const cookieParser = require("cookie-parser");
 const { productRouter } = require('./routes/productRoute');
+const { contactRouter } = require('./routes/contactRouter');
 
 const app = express();
 const PORT = 8080;
@@ -18,6 +19,7 @@ app.use("/uploads", express.static(path.join(__dirname) , "uploads"));
 
 app.use("/", userRouter);
 app.use("/", productRouter);
+app.use("/" , contactRouter);
 
 app.get("/", async(req,res) => {
     res.send("Hello from my side")

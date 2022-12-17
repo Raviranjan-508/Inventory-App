@@ -3,7 +3,6 @@ const { Router } = require("express");
 const { createProduct, getProducts, getProduct, deleteProduct, updateProduct } = require("../controller/productController");
 const { protect } = require("../middleWare/authMiddlewre");
 const { upload } = require("../utils/fileUpload");
-upload
 const productRouter = Router();
 
 
